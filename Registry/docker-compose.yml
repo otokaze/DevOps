@@ -1,0 +1,24 @@
+version: "3"
+services: 
+    registry:
+        image: registry:2
+        ports:
+        - 5000:443
+        volumes:
+        - ./lib:/var/lib/registry
+        - ./auth:/auth
+        - ./certs:/certs
+        container_name: registry
+        environment:
+            - REGISTRY_HTTP_ADDR=0.0.0.0:443
+            - REGISTRY_AUTH=htpasswd
+            - REGISTRY_AUTH_HTPASSWD_REALM=Registry Realm
+            - REGISTRY_AUTH_HTPASSWD_PATH=/auth/htpasswd
+            - REGISTRY_HTTP_TLS_CERTIFICATE=/certs/registry.otokaze.cn.pem
+            - REGISTRY_HTTP_TLS_KEY=/certs/registry.otokaze.cn.key
+        deploy:
+            restart_policy:
+                condition: on-failure
+                delay: 5s
+                max_attempts: 3
+                window: 120s
