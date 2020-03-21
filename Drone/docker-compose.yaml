@@ -1,0 +1,33 @@
+version: '3'
+services:
+  drone:
+    image: drone/drone:latest
+    ports:
+      - 127.0.0.1:4080:80
+    volumes:
+      - /opt/drone:/data
+    environment:
+      - DRONE_AGENTS_ENABLED=true
+      - DRONE_GITEA_SERVER=https://git.otokaze.cn
+      - DRONE_GITEA_CLIENT_ID=40e04d0f-a3de-4504-bf45-f89765707d54
+      - DRONE_GITEA_CLIENT_SECRET=VzKwTsNIyh-NKUlyZ8nCacnfGb2ryBa84DEGO1V2GPQ=
+      - DRONE_RPC_SECRET=c80aa94522d8e2b81909bb4e79516227
+      - DRONE_SERVER_HOST=drone.otokaze.cn
+      - DRONE_SERVER_PROTO=https
+      - TZ=Asia/Shanghai
+    container_name: drone
+    restart: always
+
+  runner:
+    image: drone/agent:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - drone
+    environment:
+      - DRONE_RPC_PROTO=http
+      - DRONE_RPC_HOST=drone
+      - DRONE_RPC_SECRET=c80aa94522d8e2b81909bb4e79516227
+      - DRONE_RUNNER_CAPACITY=2
+    container_name: runner
+    restart: always

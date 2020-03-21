@@ -1,0 +1,14 @@
+version: '3'
+services:
+  gittea:
+    image: gitea/gitea:1.10.0
+    volumes:
+      - /opt/gitea:/data
+    ports:
+      - "127.0.0.1:3000:3000"
+      - "3022:22"
+    container_name: gitea
+    restart: always
+    environment: 
+      - TZ=Asia/Shanghai
+
